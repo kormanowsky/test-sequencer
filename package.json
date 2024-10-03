@@ -5,7 +5,7 @@
   "main": "dist/",
   "scripts": {
     "build": "npx tsc",
-    "example": "cd example && npx jest",
+    "example": "cd example && npx jest --cacheDirectory=./jest-cache --verbose --passWithNoTests",
     "prepublishOnly": "npm run build"
   },
   "exports": {
@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/kormanowsky/test-sequencer#readme",
   "dependencies": {
-    "@kormanowsky/distrib": "0.0.3"
+    "@kormanowsky/distrib": "0.0.4"
   },
   "devDependencies": {
     "@types/jest": "29.5.13",
