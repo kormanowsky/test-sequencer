@@ -4,7 +4,9 @@
   "description": "A set of test sequencers to use with TS/JS test frameworks",
   "main": "dist/index.js",
   "scripts": {
-    "test": "npx jest"
+    "build": "npx tsc",
+    "test": "npx jest",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -12,8 +14,23 @@
   },
   "author": "Mikhail Kormanovskii <kormanowsky@gmail.com>",
   "license": "ISC",
+  "files": [
+    "dist/"
+  ],
   "bugs": {
     "url": "https://github.com/kormanowsky/test-sequencer/issues"
   },
-  "homepage": "https://github.com/kormanowsky/test-sequencer#readme"
+  "homepage": "https://github.com/kormanowsky/test-sequencer#readme",
+  "dependencies": {
+    "@kormanowsky/distrib": "0.0.2"
+  },
+  "devDependencies": {
+    "@types/jest": "29.5.13",
+    "jest": "29.7.0",
+    "ts-jest": "29.2.5",
+    "typescript": "5.6.2"
+  },
+  "peerDependencies": {
+    "@jest/test-sequencer": "29.7.0"
+  }
 }
