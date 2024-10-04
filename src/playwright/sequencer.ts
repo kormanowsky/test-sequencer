@@ -3,19 +3,71 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { TestSharder } from '../sharder';
 
-const targetProjectRoot = process.env.TARGET_PROJECT_CWD ?? 
-    path.resolve(__filename, '..', '..', '..');
+interface Test {
+    location: string;
+    duration?: number;
+}
 
-const shardConfigArg = /--shard[ =](\d+)\/(\d+)/.exec(process.argv.join(' '));
+const targetProjectRoot = process.env.TARGET_PROJECT_CWD ?? path.resolve(__filename, '..', '..', '..');
 
-const shardConfig = {index: 1, total: 1};
+const shardConfig = process.env.SHARD_INDEX != null && process.env.SHARD_TOTAL != null ? {
+    index: parseInt(process.env.SHARD_INDEX, 10),
+    total: parseInt(process.env.SHARD_TOTAL, 10)
+} : {index: 1, total: 1};
 
-if (shardConfigArg != null) {
-    shardConfig.index = parseInt(shardConfigArg[1], 10);
-    shardConfig.total = parseInt(shardConfigArg[2], 10);
-} else if (process.env.SHARD_INDEX != null && process.env.SHARD_TOTAL != null) {
-    shardConfig.index = parseInt(process.env.SHARD_INDEX, 10);
-    shardConfig.total = parseInt(process.env.SHARD_TOTAL, 10);
+function parseProcessArgv(processArgv: string[]): {pwArgs: string[]; shardIndex?: number; shardTotal?: number} {
+    const argv = [...processArgv];
+
+    let 
+        shardConfigArg: string | null = null,
+        reporterConfigArg: string | null = null;
+
+    for(let i = 0; i < argv.length; ++i) {
+        if (argv[i] === '--shard') {
+            if (i + 1 < argv.length) {
+                shardConfigArg = argv[i + 1];
+
+                argv.splice(i, 2);
+                --i;
+            }
+        } else if (argv[i].startsWith('--shard=')) {
+            shardConfigArg = argv[i].slice('--shard='.length);
+            
+            argv.splice(i, 1);
+            --i;
+        } else if (argv[i] === '--reporter') {
+            if (i + 1 < argv.length) {
+                reporterConfigArg = argv[i + 1];
+
+                argv.splice(i, 2);
+                --i;
+            }
+        } else if (argv[i].startsWith('--reporter=')) {
+            reporterConfigArg = argv[i].slice('--reporter='.length);
+
+            argv.slice(i, 1);
+            --i;
+        }
+    }
+
+    const reporterPath = path.resolve(__filename, '..', 'reporter');
+
+    if (reporterConfigArg != null) {
+        reporterConfigArg += ',' + reporterPath;
+    } else {
+        reporterConfigArg = reporterPath;
+    }
+
+    argv.push(`--reporter=${reporterConfigArg}`);
+
+
+    if (shardConfigArg != null) {
+        const [strIndex, strTotal] = shardConfigArg.split('/');
+    
+        return {pwArgs: argv, shardIndex: parseInt(strIndex, 10), shardTotal: parseInt(strTotal, 10)};
+    }
+
+    return {pwArgs: argv};
 }
 
 function runPlaywright(args: string[], stdio: 'pipe'|'ignore'|'inherit' = 'pipe'): string | null {
@@ -50,36 +102,49 @@ function extractAllTests(): Set<string> {
 }
 
 function extractCache(): Record<string, number> {
-    return JSON.parse(
-        fs.readFileSync(
-            path.resolve(
-                targetProjectRoot, 'playwright-cache', 'perf-cache.json'
-            ), 
-            'utf8'
-        )
-    );
+    try {
+        return JSON.parse(
+            fs.readFileSync(
+                path.resolve(
+                    targetProjectRoot, 'test-results', 'perf-cache.json'
+                ), 
+                'utf8'
+            )
+        );
+
+    } catch(e) {
+        console.warn(`Error while reading cache file: ${e}`);
+
+        return {};
+    }
 }
 
-interface Test {
-    location: string;
-    duration?: number;
+function main(): void {
+    const
+        processArgv = process.argv.slice(2),
+        {pwArgs, shardIndex, shardTotal} = parseProcessArgv(processArgv),
+        tests = extractAllTests(),
+        cache = extractCache(),
+        shardConfig = {index: 1, total: 1};
+
+    if (shardIndex != null && shardTotal != null) {
+        shardConfig.index = shardIndex;
+        shardConfig.total = shardTotal;
+    }
+
+    const testObjects: Test[] = [];
+
+    for(const test of tests) {
+        testObjects.push({location: test, duration: cache[test]});
+    }
+
+    const 
+        sharder = new TestSharder<Test>((test) => test.duration ?? 1),
+        shardedTests = sharder.shard(testObjects, shardConfig.index, shardConfig.total);
+
+    if (shardedTests.length > 0) {
+        runPlaywright([...shardedTests.map(test => test.location), ...pwArgs], 'inherit');
+    }
 }
 
-const 
-    tests = extractAllTests(),
-    cache = extractCache();
-
-const testObjects: Test[] = [];
-
-for(const test of tests) {
-    testObjects.push({location: test, duration: cache[test]});
-}
-
-const 
-    sharder = new TestSharder<Test>((test) => test.duration ?? 1),
-    shardedTests = sharder.shard(testObjects, shardConfig.index, shardConfig.total);
-
-
-if (shardedTests.length > 0) {
-   runPlaywright(shardedTests.map(test => test.location), 'inherit');
-}
+main();

@@ -32,9 +32,7 @@ export default class TestReporter implements Reporter {
             preparedCache[location] += duration / retires;
         }
 
-        fs.mkdirSync('playwright-cache');
-
-        fs.writeFileSync('playwright-cache/perf-cache.json', JSON.stringify(preparedCache));
+        fs.writeFileSync('test-results/perf-cache.json', JSON.stringify(preparedCache));
     }
 
     printsToStdio(): boolean {
