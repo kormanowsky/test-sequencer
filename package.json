@@ -1,11 +1,11 @@
 {
   "name": "@kormanowsky/test-sequencer",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A set of test sequencers to use with TS/JS test frameworks",
   "main": "dist/",
   "scripts": {
     "build": "npx tsc",
-    "example": "cd example && npx jest --cacheDirectory=./jest-cache --verbose --passWithNoTests",
+    "example:jest": "cd examples/jest && npx jest --cacheDirectory=./jest-cache --verbose --passWithNoTests",
     "prepublishOnly": "npm run build"
   },
   "exports": {
@@ -25,7 +25,8 @@
   },
   "homepage": "https://github.com/kormanowsky/test-sequencer#readme",
   "dependencies": {
-    "@kormanowsky/distrib": "0.0.4"
+    "@kormanowsky/distrib": "0.0.4",
+    "@playwright/test": "1.38.0"
   },
   "devDependencies": {
     "@types/jest": "29.5.13",

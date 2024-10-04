@@ -34,5 +34,12 @@ directory. Don't forget to add it to your `.gitignore` file, though.
 all the files are generated. This is similar to how you create one test coverage report for your sharded tests. 
 You should make `perf-cache.json` available to all the shards before the next run of the tests. 
 
-**Example:** is provided inside `example` directory. There is also a script `npm run example` which you may run to 
+**Example:** is provided inside `examples/jest` directory. There is also a script `npm run example` which you may run to 
 test the example directory. 
+
+### Playwright 
+
+1. Use `node ./@kormanowsky/test-sequencer/playwright/sequencer.js` instead of `npx playwright test`. 
+2. Add `@kormanowsky/test-sequencer/playwright/reporter` to the list of reporterss, e. g. `--reporter=list,@kormanowsky/test-sequencer/playwright/reporter`
+
+**Example:** is provided inside `examples/playwright` directory.
