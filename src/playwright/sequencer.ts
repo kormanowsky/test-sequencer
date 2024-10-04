@@ -15,7 +15,9 @@ const shardConfig = process.env.SHARD_INDEX != null && process.env.SHARD_TOTAL !
     total: parseInt(process.env.SHARD_TOTAL, 10)
 } : {index: 1, total: 1};
 
-const processArgv = process.argv.slice(2);
+const 
+    processArgv = process.argv.slice(2),
+    addReporterToPwRun = !Boolean(process.env.NO_REPORTER_IN_ARGV);
 
 function parseProcessArgv(processArgv: string[]): {pwArgs: string[]; shardIndex?: number; shardTotal?: number} {
     const argv = [...processArgv];
@@ -37,14 +39,14 @@ function parseProcessArgv(processArgv: string[]): {pwArgs: string[]; shardIndex?
             
             argv.splice(i, 1);
             --i;
-        } else if (argv[i] === '--reporter') {
+        } else if (addReporterToPwRun && argv[i] === '--reporter') {
             if (i + 1 < argv.length) {
                 reporterConfigArg = argv[i + 1];
 
                 argv.splice(i, 2);
                 --i;
             }
-        } else if (argv[i].startsWith('--reporter=')) {
+        } else if (addReporterToPwRun && argv[i].startsWith('--reporter=')) {
             reporterConfigArg = argv[i].slice('--reporter='.length);
 
             argv.slice(i, 1);
@@ -60,8 +62,9 @@ function parseProcessArgv(processArgv: string[]): {pwArgs: string[]; shardIndex?
         reporterConfigArg = reporterPath;
     }
 
-    argv.push(`--reporter=${reporterConfigArg}`);
-
+    if (addReporterToPwRun) {
+        argv.push(`--reporter=${reporterConfigArg}`);
+    }
 
     if (shardConfigArg != null) {
         const [strIndex, strTotal] = shardConfigArg.split('/');
