@@ -2,14 +2,14 @@
   "name": "example-playwright",
   "version": "1.0.0",
   "scripts": {
-    "test": "npx playwright test"
+    "test": "npx sequenced-pw"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "@kormanowsky/test-sequencer": "../../",
+    "@kormanowsky/test-sequencer": "0.0.6",
     "@playwright/test": "1.38.0"
   }
 }
