@@ -15,6 +15,8 @@ const shardConfig = process.env.SHARD_INDEX != null && process.env.SHARD_TOTAL !
     total: parseInt(process.env.SHARD_TOTAL, 10)
 } : {index: 1, total: 1};
 
+const processArgv = process.argv.slice(2);
+
 function parseProcessArgv(processArgv: string[]): {pwArgs: string[]; shardIndex?: number; shardTotal?: number} {
     const argv = [...processArgv];
 
@@ -121,11 +123,9 @@ function extractCache(): Record<string, number> {
 
 function main(): void {
     const
-        processArgv = process.argv.slice(2),
         {pwArgs, shardIndex, shardTotal} = parseProcessArgv(processArgv),
         tests = extractAllTests(),
-        cache = extractCache(),
-        shardConfig = {index: 1, total: 1};
+        cache = extractCache();
 
     if (shardIndex != null && shardTotal != null) {
         shardConfig.index = shardIndex;
