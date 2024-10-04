@@ -39,7 +39,8 @@ test the example directory.
 
 ### Playwright 
 
-1. Use `node ./@kormanowsky/test-sequencer/playwright/sequencer.js` instead of `npx playwright test`. 
-2. Add `@kormanowsky/test-sequencer/playwright/reporter` to the list of reporterss, e. g. `--reporter=list,@kormanowsky/test-sequencer/playwright/reporter`
+1. Use `npx sequenced-pw` instead of `npx playwright test`. 
+This file will shard tests and run `npx playwright test` with all arguments (except `--shard=...`) passed to 
+Playwright.
 
 **Example:** is provided inside `examples/playwright` directory.

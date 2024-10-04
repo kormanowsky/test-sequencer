@@ -1,6 +1,6 @@
 {
   "name": "@kormanowsky/test-sequencer",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A set of test sequencers to use with TS/JS test frameworks",
   "main": "dist/",
   "scripts": {
@@ -11,6 +11,9 @@
   "exports": {
     "./*": "./dist/*.js"
   },
+  "bin": {
+    "sequenced-pw": "./bin/sequenced-pw.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/kormanowsky/test-sequencer.git"
@@ -18,7 +21,8 @@
   "author": "Mikhail Kormanovskii <kormanowsky@gmail.com>",
   "license": "ISC",
   "files": [
-    "dist/"
+    "dist/",
+    "bin/"
   ],
   "bugs": {
     "url": "https://github.com/kormanowsky/test-sequencer/issues"
