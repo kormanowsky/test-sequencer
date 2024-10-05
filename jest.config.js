@@ -4,5 +4,5 @@ module.exports = {
     transform: {
       "^.+.tsx?$": ["ts-jest",{}],
     },
-    testSequencer: "@kormanowsky/test-sequencer/jest"
+    testPathIgnorePatterns: ["**/examples/**"],
 };

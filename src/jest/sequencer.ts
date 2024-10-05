@@ -1,29 +1,21 @@
-import fs from 'node:fs';
-import path from 'node:path';
-
 import Super, { ShardOptions } from "@jest/test-sequencer";
-import { AggregatedResult, Test, TestContext } from "@jest/test-result";
+import { AggregatedResult, Test } from "@jest/test-result";
 
-import { TestSharder } from "./sharder";
+import { TestSharder, TestDurationCache, cacheFileName } from "../common";
 
-export default class TestSequencer extends Super {
+export class JestTestSequencer extends Super {
     constructor() {
         super();
 
         this.sharder = new TestSharder<Test>((test) => test.duration ?? 1);
-    }
-
-    _getCachePath(testContext: TestContext): string {
-        const {config} = testContext;
-
-        return path.join(config.cacheDirectory, 'perf-cache.json');
+        this.cache = new TestDurationCache(cacheFileName);
     }
 
     override shard(tests: Array<Test>, options: ShardOptions): Array<Test> | Promise<Array<Test>> {
         const testsWithDurations = tests.map((test) => {
-            const cache = this._getCache(test);
+            const cache = this.cache.get();
 
-            test.duration = cache[test.path]?.[1];
+            test.duration = cache[test.path];
 
             return test;
         });
@@ -33,7 +25,10 @@ export default class TestSequencer extends Super {
 
     cacheResults(tests: Array<Test>, results: AggregatedResult): void {
         super.cacheResults(tests, results);
+
+        this.cache.dump();
     }
 
     private sharder: TestSharder<Test>;
+    private cache: TestDurationCache;
 }

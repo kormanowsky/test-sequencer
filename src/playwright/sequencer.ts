@@ -1,7 +1,7 @@
 import {execSync} from 'node:child_process';
 import path from 'node:path';
 import fs from 'node:fs';
-import { TestSharder } from '../sharder';
+import { TestSharder } from '../common/sharder';
 
 interface Test {
     location: string;

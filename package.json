@@ -5,6 +5,7 @@
   "main": "dist/",
   "scripts": {
     "build": "npx tsc",
+    "test": "npx jest",
     "example:jest": "cd examples/jest && npx jest --cacheDirectory=./jest-cache --verbose --passWithNoTests",
     "prepublishOnly": "rm -rf dist && npm run build"
   },
