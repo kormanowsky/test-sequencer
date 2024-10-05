@@ -12,7 +12,7 @@
     "./*": "./dist/*.js"
   },
   "bin": {
-    "sequenced-pw": "./bin/sequenced-pw.js"
+    "kts-pw": "./bin/kts-pw.js"
   },
   "repository": {
     "type": "git",
