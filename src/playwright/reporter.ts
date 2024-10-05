@@ -1,26 +1,32 @@
-import fs from 'node:fs';
-import { FullResult, Reporter, TestCase, TestResult } from "@playwright/test/reporter";
+import { Reporter, TestCase, TestResult } from "@playwright/test/reporter";
+
+import { cacheFileName, TestDurationCache } from '../common';
 
 export default class TestReporter implements Reporter {
+    constructor() {
+        this.testRunCache = new Map<[string, string], [number, number]>();
+        this.testDurationCache = new TestDurationCache(cacheFileName);
+    }
+
     onTestEnd(test: TestCase, result: TestResult): void {
         const 
             testTitle = test.titlePath().join(' '),
             testLocation = `${test.location.file}:${test.location.line}:${test.location.column}`,
             testCacheKey: [string, string] = [testTitle, testLocation];
 
-        if (!this.cache.has(testCacheKey)) {
-            this.cache.set(testCacheKey, [result.duration, 1]);
+        if (!this.testRunCache.has(testCacheKey)) {
+            this.testRunCache.set(testCacheKey, [result.duration, 1]);
         } else {
-            const [storedDuration, storeRetries] = this.cache.get(testCacheKey);
+            const [storedDuration, storeRetries] = this.testRunCache.get(testCacheKey);
 
-            this.cache.set(testCacheKey, [storedDuration + result.duration, storeRetries + 1]);
+            this.testRunCache.set(testCacheKey, [storedDuration + result.duration, storeRetries + 1]);
         }
     }
 
-    onEnd(result: FullResult): void | Promise<void> {
+    onEnd(): void | Promise<void> {
         const preparedCache: Record<string, number> = {};
 
-        for(const [key, value] of this.cache.entries()) {
+        for(const [key, value] of this.testRunCache.entries()) {
             const 
                 [_, location] = key,
                 [duration, retires] = value;
@@ -32,12 +38,14 @@ export default class TestReporter implements Reporter {
             preparedCache[location] += duration / retires;
         }
 
-        fs.writeFileSync('test-results/perf-cache.json', JSON.stringify(preparedCache));
+        this.testDurationCache.load();
+        this.testDurationCache.set(preparedCache);
     }
 
     printsToStdio(): boolean {
         return false;
     }
 
-    private cache: Map<[string, string], [number, number]> = new Map<[string, string], [number, number]>();
+    private testRunCache: Map<[string, string], [number, number]>;
+    private testDurationCache: TestDurationCache;
 }
