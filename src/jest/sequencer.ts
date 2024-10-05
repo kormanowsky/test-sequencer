@@ -12,13 +12,9 @@ export class JestTestSequencer extends Super {
     }
 
     override shard(tests: Array<Test>, options: ShardOptions): Array<Test> | Promise<Array<Test>> {
-        const testsWithDurations = tests.map((test) => {
-            const cache = this.cache.get();
-
-            test.duration = cache[test.path];
-
-            return test;
-        });
+        const 
+            cache = this.cache.get(),
+            testsWithDurations = tests.map((test) => ({...test, duration: cache[test.path]}));
 
         return this.sharder.shard(testsWithDurations, options.shardIndex, options.shardCount);
     }
