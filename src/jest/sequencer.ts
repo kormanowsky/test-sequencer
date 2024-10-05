@@ -22,7 +22,28 @@ export class JestTestSequencer extends Super {
     cacheResults(tests: Array<Test>, results: AggregatedResult): void {
         super.cacheResults(tests, results);
 
-        this.cache.dump();
+        this.cache.load();
+
+        const 
+            preparedCache: Record<string, number> = {},
+            map: Record<string, Test> = {};
+
+        for (const test of tests) {
+            map[test.path] = test;
+        }
+
+        for (const testResult of results.testResults) {
+            const test = map[testResult.testFilePath];
+            if (test != null && !testResult.skipped) {
+                const 
+                    perf = testResult.perfStats,
+                    testRuntime = perf.runtime ?? test.duration ?? perf.end - perf.start;
+
+                preparedCache[testResult.testFilePath] = testRuntime || 0;
+            }
+        }   
+
+        this.cache.set(preparedCache);
     }
 
     private sharder: TestSharder<Test>;
