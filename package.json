@@ -1,12 +1,11 @@
 {
   "name": "@kormanowsky/test-sequencer",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "A set of test sequencers to use with TS/JS test frameworks",
   "main": "dist/",
   "scripts": {
     "build": "npx tsc",
     "test": "npx jest",
-    "example:jest": "cd examples/jest && npx jest --cacheDirectory=./jest-cache --verbose --passWithNoTests",
     "prepublishOnly": "rm -rf dist && npm run build"
   },
   "exports": {

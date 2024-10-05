@@ -9,9 +9,18 @@ When received, tests are distributed into groups by using `distribObjects()` fun
 1. Install this package by running `npm install -D @kormanowsky/test-sequencer`. 
 2. Follow the instructions below depending on which test framework you are using. 
 
+### Common notes 
+
+When you run the tests, a file named `kts-cache.json` is created in your project's root directory. 
+Don't forget to cache it on CI and add it to your `.gitignore` file. 
+
+**Important:** when sharded, tests produce several cache files named `kts-cache.json` maybe inside different run contexts (CI jobs, build machines etc). It is your task to collect and merge them all after all the shards finish and 
+all the files are generated. This is similar to how you create one test coverage report for your sharded tests. 
+You should make `kts-cache.json` available to all the shards before the next run of the tests.
+
 ### Jest 
 
-1. Add the following to your `jest.config.js`: 
+Add the following to your `jest.config.js`: 
 
 ```js
 module.exports = {
@@ -21,26 +30,13 @@ module.exports = {
 }
 ```
 
-2. Run `jest` with `--cacheDirectory`: 
-
-```bash
-npx jest --cacheDirectory=./jest-cache 
-```
-
-3. That's it! Now your tests are run and some cache files, including `perf-cache.json`, are created inside `jest-cache`
-directory. Don't forget to add it to your `.gitignore` file, though. 
-
-**Important:** when sharded, tests produce several cache files named `perf-cache.json` maybe inside different run contexts (CI jobs, build machines etc). It is your task to collect and merge them all after all the shards finish and 
-all the files are generated. This is similar to how you create one test coverage report for your sharded tests. 
-You should make `perf-cache.json` available to all the shards before the next run of the tests. 
-
-**Example:** is provided inside `examples/jest` directory. There is also a script `npm run example` which you may run to 
-test the example directory. 
+**Example:** is provided inside `examples/jest` directory.
 
 ### Playwright 
 
-1. Use `npx sequenced-pw` instead of `npx playwright test`. 
-This file will shard tests and run `npx playwright test` with all arguments (except `--shard=...`) passed to 
-Playwright.
+Use `npx kts-pw` instead of `npx playwright`. 
+This file will shard tests and run `npx playwright test`, passing all arguments to Playwright. 
+Shard index and total shards count must be set as `KTS_PW_SHARD_INDEX` and `KTS_PW_SHARD_TOTAL`, respectively. 
+Do not use `--shard=...` for this purpose. 
 
 **Example:** is provided inside `examples/playwright` directory.
