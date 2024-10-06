@@ -9,12 +9,12 @@ export class TestExtractor {
 
     extractAllTests(): string[] {
         const 
-            rawOutput = this.pwRunner.run(['test', '--list']),
+            rawOutput = this.pwRunner.run(['test', '--list']).output,
             tests = new Set<string>();
 
         for(const line of rawOutput.split('\n')) {
             const testLocationMatch = this.pwTestLocationRegex.exec(line);
-            
+           
             if (testLocationMatch != null) {
                 tests.add(path.resolve(targetProjectPath, testLocationMatch[1]));
             }
@@ -23,6 +23,6 @@ export class TestExtractor {
         return [...tests];
     }
 
-    private pwTestLocationRegex = /›?\s*(.+\.[t|j]sx?:\d+:\d+)\s*›/;
+    private pwTestLocationRegex = /›?\s*([^›]+\.[t|j]sx?:\d+:\d+)\s*›/;
     private pwRunner: PlaywrightRunner;
 }
