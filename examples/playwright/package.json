@@ -9,7 +9,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "@kormanowsky/test-sequencer": "0.0.13",
+    "@kormanowsky/test-sequencer": "0.0.14",
     "@playwright/test": "1.38.0"
   }
 }

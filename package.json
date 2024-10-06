@@ -1,6 +1,6 @@
 {
   "name": "@kormanowsky/test-sequencer",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "A set of test sequencers to use with TS/JS test frameworks",
   "main": "dist/",
   "scripts": {

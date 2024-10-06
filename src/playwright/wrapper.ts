@@ -1,5 +1,5 @@
-import { cacheFileName, TestDurationCache, TestSharder } from '../common';
-import { pwIncludeReporterInArgv, pwOnlyListShardedTests, pwShardConfig } from './config';
+import { cacheFileName, enabled, TestDurationCache, TestSharder } from '../common';
+import { pwOnlyListShardedTests, pwShardConfig } from './config';
 import { PlaywrightRunner } from './runner';
 import { TestExtractor } from './test-extractor';
 
@@ -7,7 +7,7 @@ const
     argv = process.argv.slice(2),
     pwRunner = new PlaywrightRunner(argv);
 
-if(argv[0] !== 'test') {
+if(argv[0] !== 'test' || !enabled) {
     process.exit(pwRunner.run([PlaywrightRunner.userSuppliedArgs]).exitCode);
 } 
 

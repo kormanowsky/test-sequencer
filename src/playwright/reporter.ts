@@ -1,14 +1,22 @@
 import { Reporter, TestCase, TestResult } from "@playwright/test/reporter";
 
-import { cacheFileName, TestDurationCache } from '../common';
+import { cacheFileName, enabled, TestDurationCache } from '../common';
 
 export default class TestReporter implements Reporter {
     constructor() {
+        if (!enabled) {
+            return;
+        }
+
         this.testRunCache = new Map<[string, string], [number, number]>();
         this.testDurationCache = new TestDurationCache(cacheFileName);
     }
 
     onTestEnd(test: TestCase, result: TestResult): void {
+        if (!enabled) {
+            return;
+        }
+
         const 
             testTitle = test.titlePath().join(' '),
             testLocation = `${test.location.file}:${test.location.line}:${test.location.column}`,
@@ -24,6 +32,10 @@ export default class TestReporter implements Reporter {
     }
 
     onEnd(): void | Promise<void> {
+        if (!enabled) {
+            return;
+        }
+
         const preparedCache: Record<string, number> = {};
 
         for(const [key, value] of this.testRunCache.entries()) {
