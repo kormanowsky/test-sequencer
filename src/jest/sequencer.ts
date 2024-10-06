@@ -22,8 +22,6 @@ export class JestTestSequencer extends Super {
     cacheResults(tests: Array<Test>, results: AggregatedResult): void {
         super.cacheResults(tests, results);
 
-        this.cache.load();
-
         const 
             preparedCache: Record<string, number> = {},
             map: Record<string, Test> = {};
@@ -39,7 +37,7 @@ export class JestTestSequencer extends Super {
                     perf = testResult.perfStats,
                     testRuntime = perf.runtime ?? test.duration ?? perf.end - perf.start;
 
-                preparedCache[testResult.testFilePath] = testRuntime || 0;
+                preparedCache[testResult.testFilePath] = testRuntime ?? 0;
             }
         }   
 

@@ -1,3 +1,4 @@
 node_modules/
 dist/
-test-sequencer-cache.json
+kts-cache.json
+test-results/

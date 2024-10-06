@@ -16,5 +16,5 @@ const
 if (pwOnlyListShardedTests) {
     shardedTestLocations.forEach(location => console.log(location));
 } else if (shardedTests.length > 0) {
-    pwRunner.run(shardedTestLocations, {stdio: 'inherit', includeReporter: pwIncludeReporterInArgv});
+    pwRunner.run(['test', ...shardedTestLocations], {stdio: 'inherit', includeReporter: pwIncludeReporterInArgv});
 }

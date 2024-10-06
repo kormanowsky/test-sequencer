@@ -1,3 +1,5 @@
+import path from 'node:path';
+import { targetProjectPath } from "../common";
 import { PlaywrightRunner } from "./runner";
 
 export class TestExtractor {
@@ -14,7 +16,7 @@ export class TestExtractor {
             const testLocationMatch = this.pwTestLocationRegex.exec(line);
             
             if (testLocationMatch != null) {
-                tests.add(testLocationMatch[1]);
+                tests.add(path.resolve(targetProjectPath, testLocationMatch[1]));
             }
         }
 
