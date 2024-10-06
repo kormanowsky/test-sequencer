@@ -28,39 +28,24 @@ export class TestDurationCache {
     }
 
     load(): boolean {
-        let canReadCache = false;
-
         try {
-            fs.access(this.cacheFilePath, fs.constants.R_OK, null);
-            canReadCache = true;
-        } catch (e) {
-            console.warn(`Warning: cannot read cache: ${e}`);
-        }
-
-        if (canReadCache) {
             this.cache = JSON.parse(fs.readFileSync(this.cacheFilePath, 'utf8'));
-        } else {
+            return true;
+        } catch (e) {
             this.cache = {};
+            console.warn(`Warning: cannot read cache: ${e}`);
+            return false;
         }
-
-        return canReadCache;
     }
 
     dump(): boolean {
-        let canWriteCache = false;
-
         try {
-            fs.access(this.cacheFilePath, fs.constants.W_OK, null);
-            canWriteCache = true;
+            fs.writeFileSync(this.cacheFilePath, JSON.stringify(this.cache));
+            return true;
         } catch (e) {
             console.warn(`Warning: cannot write cache: ${e}`);
+            return false;
         }
-
-        if (canWriteCache) {
-            fs.writeFileSync(this.cacheFilePath, JSON.stringify(this.cache));
-        }
-
-        return canWriteCache;
     }
 
     private cacheFilePath: string;
