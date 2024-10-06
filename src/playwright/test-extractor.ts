@@ -9,7 +9,7 @@ export class TestExtractor {
 
     extractAllTests(): string[] {
         const 
-            rawOutput = this.pwRunner.run(['test', '--list']).output,
+            rawOutput = this.pwRunner.run([PlaywrightRunner.userSuppliedArgs, '--list']).output,
             tests = new Set<string>();
 
         for(const line of rawOutput.split('\n')) {
