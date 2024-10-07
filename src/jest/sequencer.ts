@@ -53,7 +53,7 @@ export class JestTestSequencer extends Super {
             }
         }   
 
-        this.cache.set(preparedCache);
+        this.cache.set(preparedCache, true);
     }
 
     private sharder: TestSharder<Test>;

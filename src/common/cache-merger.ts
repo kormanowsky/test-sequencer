@@ -5,13 +5,13 @@ import { targetProjectPath } from './config';
 
 async function main(argv: string[]): Promise<number> {
 
-    if (argv.length < 2 || argv[0] !== 'merge-cache') {
+    if (argv.length < 3 || argv[0] !== 'merge-cache') {
         console.log('Usage: npx kts merge-cache output_file input_files_glob_1 [input_files_glob_2]...');
         return 1;
     }
 
     const 
-        [outputFilePath, ...inputFilesGlobs] = argv,
+        [outputFilePath, ...inputFilesGlobs] = argv.slice(1),
         cache = new TestDurationCache(outputFilePath);
 
     for(const inputFilesGlob of inputFilesGlobs) {

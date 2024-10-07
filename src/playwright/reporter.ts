@@ -50,8 +50,7 @@ export default class TestReporter implements Reporter {
             preparedCache[location] += duration / retires;
         }
 
-        this.testDurationCache.load();
-        this.testDurationCache.set(preparedCache);
+        this.testDurationCache.set(preparedCache, true);
     }
 
     printsToStdio(): boolean {
