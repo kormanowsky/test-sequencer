@@ -15,7 +15,8 @@ When you run the tests, a file named `kts-cache.json` is created in your project
 Don't forget to cache it on CI and add it to your `.gitignore` file. 
 
 **Important:** when sharded, tests produce several cache files named `kts-cache.json` maybe inside different run contexts (CI jobs, build machines etc). It is your task to collect and merge them all after all the shards finish and 
-all the files are generated. This is similar to how you create one test coverage report for your sharded tests. 
+all the files are generated. You may use `npx kts-merge kts-cache.json kts-cache*.json` to fulfil this task. 
+This is similar to how you create one test coverage report for your sharded tests. 
 You should make `kts-cache.json` available to all the shards before the next run of the tests.
 
 ### Jest 

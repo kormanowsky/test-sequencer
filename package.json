@@ -1,6 +1,6 @@
 {
   "name": "@kormanowsky/test-sequencer",
-  "version": "0.0.15",
+  "version": "0.1.0",
   "description": "A set of test sequencers to use with TS/JS test frameworks",
   "main": "dist/",
   "scripts": {
@@ -14,6 +14,7 @@
     "./playwright": "./dist/playwright/index.js"
   },
   "bin": {
+    "kts": "./bin/kts.js",
     "kts-pw": "./bin/kts-pw.js"
   },
   "repository": {
@@ -31,7 +32,8 @@
   },
   "homepage": "https://github.com/kormanowsky/test-sequencer#readme",
   "dependencies": {
-    "@kormanowsky/distrib": "0.0.4"
+    "@kormanowsky/distrib": "0.0.4",
+    "tiny-glob": "^0.2.9"
   },
   "devDependencies": {
     "@types/jest": "29.5.13",
