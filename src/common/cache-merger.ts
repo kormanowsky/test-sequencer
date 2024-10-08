@@ -14,6 +14,8 @@ async function main(argv: string[]): Promise<number> {
         [outputFilePath, ...inputFilesGlobs] = argv.slice(1),
         cache = new TestDurationCache(outputFilePath);
 
+    cache.load();
+
     for(const inputFilesGlob of inputFilesGlobs) {
         for (const inputFile of await glob(inputFilesGlob, {cwd: targetProjectPath})) {
             const inputCache = new TestDurationCache(inputFile);

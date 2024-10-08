@@ -1,7 +1,7 @@
 import path from 'node:path';
 import fs from 'node:fs';
 
-import { targetProjectPath } from './config';
+import { cacheMergeStrategy, targetProjectPath } from './config';
 
 export class TestDurationCache {
     constructor(cacheFileName: string) {
@@ -19,9 +19,21 @@ export class TestDurationCache {
 
     set(cache: Partial<Record<string, number>>, overwrite: boolean = false): boolean {
         if (overwrite) {
-            this.cache = cache;    
+            this.cache = cache;
+
         } else {
-            this.cache = {...this.cache, ...cache};
+            Object.entries(cache).forEach(([key, value]) => {
+                if (this.cache.hasOwnProperty(key)) {
+                    if (cacheMergeStrategy === 'average') {
+                        this.cache[key] += value;
+                        this.cache[key] >>= 1;
+                    } else {
+                        this.cache[key] = value;
+                    }
+                } else {
+                    this.cache[key] = value;
+                }
+            });
         }
 
         return this.dump();
